@@ -3,7 +3,109 @@ Networking is a core part of an android part if it includes some external API ca
 
 I use retrofit for API calls in all my android project. But I have to write same code for different project and different API again and again. So I have simplified retrofit network calls code so that I can easily use them in my projects. Now all I have to do is create a JsonApiCaller class object all call the GET and POST methods to complete my network call. 
 
-Retrofit network call have the following steps:
+## An Example of using simplified retrofit network call
+
+### Model class
+
+```java
+public class Topic {
+   /* {
+        "userId": 1,
+            "id": 1,
+            "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+            "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+    }*/
+    int userId;
+    int id;
+    String title;
+    String body;
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+    
+    public String getBody() {
+        return body;
+    }
+
+    @Override
+    public String toString() {
+        return "Topic{" +  '\n' +
+                "userId:: " + userId +  '\n' +
+                "id:: " + id +  '\n' +
+                "title:: " + title + '\n' +
+                "body:: " + body + '\n' +
+                '}';
+    }
+}
+```
+
+### Network call using simplified version from [jsonplaceholder](https://jsonplaceholder.typicode.com/)
+
+```java
+public class JsonPlaceHolder {
+    public static final String TAG = "JsonPlaceHolder->";
+    public static final String BASE_URL = "https://jsonplaceholder.typicode.com/";
+
+    public MutableLiveData<Topic> fetchTopic(){
+        JsonApiCaller<Topic> jsonApiCaller = new JsonApiCaller<>(Topic.class,BASE_URL);
+        MutableLiveData<Topic> mutableLiveData = new MutableLiveData<>();
+
+        jsonApiCaller.GET("posts/1")
+                .addOnFinishListener(new OnFinishListener<Topic>() {
+                    @Override
+                    public void onSuccess(Topic topic) {
+                        Log.d(TAG,"Success");
+                        Log.d(TAG,"fetchTopic()->"+topic.toString());
+                        mutableLiveData.postValue(topic);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.d(TAG,"Failed");
+                    }
+                });
+        return mutableLiveData;
+    }
+
+    public MutableLiveData<List<Topic>> fetchTopicList(){
+        Type type = new TypeToken<List<Topic>>(){}.getType();
+        JsonApiCaller<List<Topic>> jsonApiCaller = new JsonApiCaller<>(type,BASE_URL);
+        MutableLiveData<List<Topic>> mutableLiveData = new MutableLiveData<>();
+
+        jsonApiCaller.GET("posts")
+                .addOnFinishListener(new OnFinishListener<List<Topic>>() {
+                    @Override
+                    public void onSuccess(List<Topic> topics) {
+                        Log.d(TAG,"Success");
+                        Log.d(TAG,"Total topic: "+topics.size());
+                        if(topics.size()>0){
+                            Log.d(TAG,"fetchTopicList()->"+topics.get(topics.size()-1).toString());
+                        }
+                        mutableLiveData.postValue(topics);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.d(TAG,"fetchTopicList()->"+"Failed");
+                    }
+                });
+        return mutableLiveData;
+    }
+}
+```
+
+
+
+## Simplified Retrofit network call have the following steps:
 
 - Step - 1 : Create a interface with relative endpoints and response types.
 
