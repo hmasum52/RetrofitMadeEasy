@@ -4,9 +4,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
 
@@ -45,7 +43,7 @@ public class JsonApiCaller<T>{
      */
     public JsonApiCaller(Type type, String baseUrl){
         this.type = type;
-        apiEndPoints = ApiService.getInstance(baseUrl).getJsonApiEndPoints();
+        apiEndPoints = RetrofitInstance.getInstance(baseUrl).getJsonApiEndPoints();
     }
     public void addOnFinishListener(OnFinishListener<T> onFinishListener) {
         this.onFinishListener = onFinishListener;
@@ -78,15 +76,6 @@ public class JsonApiCaller<T>{
     }
 
     private void enqueueRequest(Call<JsonElement> call){
-        //for debugging
-        //start
-        Request request = call.request();
-        Log.d(TAG,"enqueueRequest>method: "+request.method());
-        Log.d(TAG,"enqueueRequest>url: "+request.url());
-        Log.d(TAG,"enqueueRequest>headers: "+request.headers());
-       // Log.d(TAG,"callForObject>body: "+request.body());
-        //end
-
         call.enqueue(new Callback<JsonElement>() {
             @Override
             public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
@@ -108,7 +97,7 @@ public class JsonApiCaller<T>{
                 if(className.endsWith("UnknownHostException") )
                     Log.d(TAG,"enqueueRequest>Server is not responding");
                 else if(className.endsWith("JsonSyntaxException"))
-                    Log.d(TAG,"enqueueRequest>Response is not a com.google.gson.JsonArray");
+                    Log.d(TAG,"enqueueRequest>Response is not of expected type.");
                 t.printStackTrace();
             }
         });

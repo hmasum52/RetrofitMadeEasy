@@ -12,12 +12,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author Hasan Masum
  * @version 1.1
  */
-public class ApiService {
+public class RetrofitInstance {
     public static final String TAG = "ApiService->";
-    private static final Map<String, ApiService> instanceMap = new HashMap<>();
+    private static final Map<String, RetrofitInstance> instanceMap = new HashMap<>();
     private final JsonApiEndPoints jsonApiEndPoints;
 
-    private ApiService(String baseUrl){
+    private RetrofitInstance(String baseUrl){
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.level(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -32,9 +32,9 @@ public class ApiService {
         System.out.println(TAG+"Retrofit Api is created successfully");
     }
 
-    public static synchronized ApiService getInstance(String baseUrl) {
+    public static synchronized RetrofitInstance getInstance(String baseUrl) {
         if(instanceMap.get(baseUrl) == null){
-            instanceMap.put(baseUrl,new ApiService(baseUrl));
+            instanceMap.put(baseUrl,new RetrofitInstance(baseUrl));
         }
         return instanceMap.get(baseUrl);
     }

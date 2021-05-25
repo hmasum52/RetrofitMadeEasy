@@ -16,9 +16,9 @@ public class JsonPlaceHolder {
     public static final String BASE_URL = "https://jsonplaceholder.typicode.com/";
 
     public MutableLiveData<Topic> fetchTopic(){
-        JsonApiCaller<Topic> jsonApiCaller = new JsonApiCaller<>(Topic.class,BASE_URL);
         MutableLiveData<Topic> mutableLiveData = new MutableLiveData<>();
 
+        JsonApiCaller<Topic> jsonApiCaller = new JsonApiCaller<>(Topic.class,BASE_URL);
         jsonApiCaller.GET("posts/1")
                 .addOnFinishListener(new OnFinishListener<Topic>() {
                     @Override
@@ -37,10 +37,10 @@ public class JsonPlaceHolder {
     }
 
     public MutableLiveData<List<Topic>> fetchTopicList(){
-        Type type = new TypeToken<List<Topic>>(){}.getType();
-        JsonApiCaller<List<Topic>> jsonApiCaller = new JsonApiCaller<>(type,BASE_URL);
         MutableLiveData<List<Topic>> mutableLiveData = new MutableLiveData<>();
 
+        Type type = new TypeToken<List<Topic>>(){}.getType();
+        JsonApiCaller<List<Topic>> jsonApiCaller = new JsonApiCaller<>(type,BASE_URL);
         jsonApiCaller.GET("posts")
                 .addOnFinishListener(new OnFinishListener<List<Topic>>() {
                     @Override
